@@ -15,3 +15,8 @@ You can download and execute Groot easily downloading the latest stable
       ./Groot-0.4.2-x86_64.AppImage
 
 It should work with Ubuntu 16.04 or later.
+
+
+# The current tree
+
+![tree](tree_snapshot.png)
