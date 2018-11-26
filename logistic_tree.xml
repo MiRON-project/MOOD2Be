@@ -1,0 +1,57 @@
+<root main_tree_to_execute="BehaviorTree">
+    <!--------------------------------------->
+    <BehaviorTree ID="BehaviorTree">
+        <Root>
+            <SequenceStar>
+                <Action ID="WaitForJob"/>
+                <Action ID="MoveTo" GoalID="ID"/>
+                <SubTree ID="LoadBox"/>
+                <Action ID="MoveTo" GoalID="ID"/>
+                <SubTree ID="UnloadBox"/>
+            </SequenceStar>
+        </Root>
+    </BehaviorTree>
+    <!--------------------------------------->
+    <BehaviorTree ID="LoadBox">
+        <Root>
+            <SequenceStar>
+                <Action ID="DockToStation_Laser"/>
+                <Action ID="DockToStation_IR"/>
+                <Action ID="LoadBoxFromStation"/>
+                <Action ID="UndockFromStation"/>
+            </SequenceStar>
+        </Root>
+    </BehaviorTree>
+    <!--------------------------------------->
+    <BehaviorTree ID="UnloadBox">
+        <Root>
+            <SequenceStar>
+                <Action ID="DockToStation_Laser"/>
+                <Action ID="DockToStation_IR"/>
+                <Action ID="UnloadBoxToStation"/>
+                <Action ID="UndockFromStation"/>
+            </SequenceStar>
+        </Root>
+    </BehaviorTree>
+    <!--------------------------------------->
+    <TreeNodesModel>
+        <Action ID="DockToCharger"/>
+        <Action ID="DockToStation_IR"/>
+        <Action ID="DockToStation_Laser"/>
+        <SubTree ID="LoadBox"/>
+        <Action ID="LoadBoxFromStation"/>
+        <Action ID="ManualLoadFromHuman"/>
+        <Action ID="ManualUnloadToHuman"/>
+        <Action ID="MoveTo">
+            <Parameter label="GoalID" default="ID"/>
+        </Action>
+        <Action ID="UndockFromCharger"/>
+        <Action ID="UndockFromStation"/>
+        <SubTree ID="UnloadBox"/>
+        <Action ID="UnloadBoxToStation"/>
+        <Action ID="UnloadFromStation"/>
+        <Action ID="WaitForJob"/>
+    </TreeNodesModel>
+    <!--------------------------------------->
+</root>
+
