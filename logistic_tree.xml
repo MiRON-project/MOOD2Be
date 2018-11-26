@@ -2,11 +2,11 @@
     <!--------------------------------------->
     <BehaviorTree ID="BehaviorTree">
         <Root>
-            <SequenceStar>
+            <SequenceStar name="MoveBox">
                 <Action ID="WaitForJob"/>
-                <Action ID="MoveTo" GoalID="ID"/>
+                <Action ID="MoveTo" GoalID="${source}"/>
                 <SubTree ID="LoadBox"/>
-                <Action ID="MoveTo" GoalID="ID"/>
+                <Action ID="MoveTo" GoalID="${destination}"/>
                 <SubTree ID="UnloadBox"/>
             </SequenceStar>
         </Root>
@@ -14,7 +14,7 @@
     <!--------------------------------------->
     <BehaviorTree ID="LoadBox">
         <Root>
-            <SequenceStar>
+            <SequenceStar name="DockAndLoad">
                 <Action ID="DockToStation_Laser"/>
                 <Action ID="DockToStation_IR"/>
                 <Action ID="LoadBoxFromStation"/>
@@ -25,7 +25,7 @@
     <!--------------------------------------->
     <BehaviorTree ID="UnloadBox">
         <Root>
-            <SequenceStar>
+            <SequenceStar name="DockAndUnload">
                 <Action ID="DockToStation_Laser"/>
                 <Action ID="DockToStation_IR"/>
                 <Action ID="UnloadBoxToStation"/>
