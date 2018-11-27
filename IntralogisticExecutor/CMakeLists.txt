@@ -23,11 +23,14 @@ find_package(ZMQ REQUIRED)
 
 #############################################################
 
-add_library(SkillInterface SHARED src/skill_interface.cpp)
-target_link_libraries(SkillInterface PRIVATE zmq behaviortree_cpp )
 
-add_executable(${PROJECT_NAME} src/executor.cpp)
-target_link_libraries(${PROJECT_NAME} behaviortree_cpp dl pthread)
+add_executable(${PROJECT_NAME}
+    src/skill_interface.cpp
+    src/skill_parser.cpp
+    src/executor.cpp
+    )
+
+target_link_libraries(${PROJECT_NAME} behaviortree_cpp dl pthread zmq)
 
 
 
