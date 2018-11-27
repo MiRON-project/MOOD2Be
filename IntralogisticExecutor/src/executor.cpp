@@ -7,6 +7,7 @@
 using namespace BT;
 
 
+
 int main(int argc, char** argv)
 {
     // Read more about args here: https://github.com/Taywee/args
@@ -45,7 +46,12 @@ int main(int argc, char** argv)
 
     if (skills_path) {
         std::cout << "\tskills file: " << args::get(skills_path) << std::endl;
-        ParseSkillFile( args::get(skills_path) );
+        auto definitions = ParseSkillFile( args::get(skills_path) );
+
+        for (const auto& definition: definitions )
+        {
+            std::cout << GenerateRequest(definition, GetUID(), definition.params, 2) << std::endl;
+        }
     }
 
     return 0;
