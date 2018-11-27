@@ -5,13 +5,21 @@
 SkillAction::SkillAction(SkillDefinition definition,
                          const std::string &instance_name,
                          const BT::NodeParameters &params,
-                         zmq::socket_t *zmq_socket):
+                         const char* ip,
+                         zmq::context_t& context):
     BT::ActionNodeBase(instance_name, params),
     _definition(std::move(definition)),
-    _socket(zmq_socket),
+    _request_socket( context, ZMQ_REQ ),
+    _reply_socket( context, ZMQ_SUB  ),
     _current_uid(0)
 {
+    char address[100];
+    sprintf(address, "tcp://%s:5557", ip );
+    _request_socket.connect( address );
 
+    sprintf(address, "tcp://%s:5558", ip );
+    _reply_socket.connect( address );
+    _reply_socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 }
 
 BT::NodeStatus SkillAction::tick()
@@ -25,16 +33,38 @@ BT::NodeStatus SkillAction::tick()
 
     // create the message
     _current_uid = GetUID();
-    std::string msg = GenerateRequest(_definition, _current_uid, _current_params, 1);
+    std::string request_msg = GenerateRequest(_definition, _current_uid, _current_params, 1);
 
     // send the message
-    //TODO
+    zmq::message_t zmq_request_msg( request_msg.size() );
+    memcpy( zmq_request_msg.data(), request_msg.c_str(), request_msg.size() );
+
+    _request_socket.send( zmq_request_msg );
+    //TODO timeout
+    std::cout << "message sent" << std::endl;
+
+    zmq::message_t ack;
+    _request_socket.recv( &ack );
+
+    std::cout << "ack received" << std::endl;
+
     // wait reply
     //TODO
+    zmq::message_t reply;
+    std::cout << "wait reply" << std::endl;
+    _reply_socket.recv( &reply );
 
-    std::string reply_value; //TODO
+    std::string reply_value( static_cast<const char*>(reply.data()), reply.size() );
 
-    return convertResultToStatus(reply_value);
+  /*  { "msg-type" : "skill-result" ,
+        "id" : 1 ,
+        "result" : {"result" : "SUCCESS", "result-value" : "OK" }
+      }*/
+
+    std::cout << "REPLY:\n" <<reply_value << std::endl;
+
+ //   return convertResultToStatus(reply_value);
+    return BT::NodeStatus::RUNNING;
 }
 
 BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_value)
@@ -50,7 +80,6 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_valu
             return result.res;
         }
     }
-    // result.value did not match exactly anyone in definition.possible_results
-    // this policy (throw) may chnge in the future
+    // this policy (throw) may change in the future
     throw std::runtime_error( "Result received is not recognized as a valid one");
 }

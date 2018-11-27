@@ -25,15 +25,18 @@ class SkillAction: public BT::ActionNodeBase
 public:
     SkillAction(SkillDefinition definition,
                 const std::string& instance_name,
-                const BT::NodeParameters& params,
-                zmq::socket_t* zmq_socket );
+                const BT::NodeParameters& params, const char *ip,
+                 zmq::context_t& context);
 
     BT::NodeStatus tick() override;
 
+    void halt() override {}
+
 private:
     SkillDefinition _definition;
-    zmq::socket_t* _socket;
-    unsigned _current_uid;
+    zmq::socket_t  _request_socket;
+    zmq::socket_t  _reply_socket;
+    unsigned        _current_uid;
     BT::NodeParameters _current_params;
 
     BT::NodeStatus convertResultToStatus(const std::string& result_value);
@@ -45,7 +48,9 @@ inline unsigned GetUID()
     return ++count;
 }
 
-std::string GenerateRequest(const SkillDefinition& definition, unsigned msg_uid ,
-                            const BT::NodeParameters &current_params, int indent = -1);
+std::string GenerateRequest(const SkillDefinition& definition,
+                            unsigned msg_uid ,
+                            const BT::NodeParameters &current_params,
+                            int indent = -1);
 
 #endif // SKILL_INTERFACE_HPP

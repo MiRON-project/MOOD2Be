@@ -18,6 +18,7 @@ int main(int argc, char** argv)
     args::Group arguments(parser, "arguments", args::Group::Validators::DontCare, args::Options::Global);
     args::ValueFlag<std::string> tree_path(arguments, "path", "The XML containing the BehaviorTree ", {'t', "tree"});
     args::ValueFlag<std::string> skills_path(arguments, "path", "JSON file containing the list of SmartSoft skills", {'s', "skills"});
+    args::ValueFlag<std::string> server_ip(arguments, "ip", "IP of the server", {"ip"}, "localhost" );
 
     try
     {
@@ -44,14 +45,24 @@ int main(int argc, char** argv)
         std::cout << "\ttree file: " << args::get(tree_path) << std::endl;
     }
 
+    std::cout << "\tIP: " << args::get(server_ip) << std::endl;
+
     if (skills_path) {
         std::cout << "\tskills file: " << args::get(skills_path) << std::endl;
         auto definitions = ParseSkillFile( args::get(skills_path) );
 
-        for (const auto& definition: definitions )
+        //for (const auto& definition: definitions )
         {
-            std::cout << GenerateRequest(definition, GetUID(), definition.params, 2) << std::endl;
+           // std::cout << GenerateRequest(definition, GetUID(), definition.params, 2) << std::endl;
         }
+
+        zmq::context_t context(1);
+        SkillAction action(definitions.front(), "my_action",
+                           definitions.front().params,
+                           args::get(server_ip).c_str(),
+                           context);
+
+        action.tick();
     }
 
     return 0;
