@@ -1,38 +1,82 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SKILL LIST EXAMPLE
 
 [
 {"skill" :
 	{ 
 		"name" : "moverobot_approach_region_purepursuit",
-		"skillDefinitionFQN" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit",
-		"inAttribute" : {
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit",
+		"in-attribute" : {
 			"location" : "String"
 		},
-		"outAttribute" : {
+		"out-attribute" : {
 		},
 		"results" : [ 
-			{ "result" : "ERROR", "resultValue" : "UNKNOWN LOCATION" },
-			{ "result" : "ERROR", "resultValue" : "ROBOT BLOCKED" },
-			{ "result" : "SUCCESS", "resultValue" : "OK" },
-			{ "result" : "SUCCESS", "resultValue" : "" }
+			{ "result" : "ERROR", "result-value" : "UNKNOWN LOCATION" },
+			{ "result" : "ERROR", "result-value" : "ROBOT BLOCKED" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
 		]
 	}
 },
 {"skill" :
 	{ 
 		"name" : "moverobot_approach_region_purepursuit_xy",
-		"skillDefinitionFQN" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit_xy",
-		"inAttribute" : {
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit_xy",
+		"in-attribute" : {
 			"x" : "Double",
 			"y" : "Double"
 		},
-		"outAttribute" : {
+		"out-attribute" : {
 		},
 		"results" : [ 
-			{ "result" : "ERROR", "resultValue" : "UNKNOWN LOCATION" },
-			{ "result" : "ERROR", "resultValue" : "ROBOT BLOCKED" },
-			{ "result" : "SUCCESS", "resultValue" : "OK" },
-			{ "result" : "SUCCESS", "resultValue" : "" }
+			{ "result" : "ERROR", "result-value" : "UNKNOWN LOCATION" },
+			{ "result" : "ERROR", "result-value" : "ROBOT BLOCKED" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
 		]
 	}
 }
 ]
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; COMMUNICATION EXAMPLES
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; INFORMATION QUERY
+{ "msg-type" : "query" , "query" :  { "type" : "get-all-positions" }}
+
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; PUSH SKILL
+;; The skills will be executed in sequence, one by one, each pushed skill should feature an unique ID, the result of the skills will features this ID
+
+{ "msg-type" : "push-skill" , "id" : 1, "skill" : { "name" : "moverobot_approach_region_purepursuit", "skillDefinitionFQN" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit", "in-attribute" : { "location" : "Lcoation1-Value" }, "out-attribute" : { }}}
+
+
+  ;; PUSH RESULTS
+  { "msg-type" : "skill-result" , "id" : 1 , "result" : { "result" : "SUCCESS", "result-value" : "OK" }}
+
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ABORT
+
+{ "msg-type" : "abort-current-running-skill" }
+{ "msg-type" : "abort-skill" , "id" : 2 }
+
+  ;; ABORT RESULTS
+  { "msg-type" : "abort-current-running-skill"}
+  { "msg-type" : "abort-skill", "id" : 2}
+
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
