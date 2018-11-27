@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(IntralogisticExecutor)
+
 #############################################################
 find_package(BehaviorTree REQUIRED)
 
@@ -19,8 +20,6 @@ set(CMAKE_CONFIG_PATH ${CMAKE_MODULE_PATH}  "${CMAKE_CURRENT_LIST_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CONFIG_PATH}")
 
 find_package(ZMQ REQUIRED)
-
-target_compile_options(${BEHAVIOR_TREE_LIBRARY} PRIVATE -Wall -Wextra -Werror=return-type)
 
 #############################################################
 
