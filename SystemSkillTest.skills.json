@@ -7,7 +7,7 @@
 		"name" : "moverobot_approach_region_purepursuit",
 		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit",
 		"in-attribute" : {
-			"location" : "String"
+			"location" : "Int"
 		},
 		"out-attribute" : {
 		},
@@ -21,11 +21,12 @@
 },
 {"skill" :
 	{ 
-		"name" : "moverobot_approach_region_purepursuit_xy",
-		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit_xy",
+		"name" : "testskill",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.testskill",
 		"in-attribute" : {
-			"x" : "Double",
-			"y" : "Double"
+			"var1" : "Int",
+			"var2" : "Double",
+			"var3" : "String"
 		},
 		"out-attribute" : {
 		},
@@ -57,7 +58,10 @@
 ;; PUSH SKILL
 ;; The skills will be executed in sequence, one by one, each pushed skill should feature an unique ID, the result of the skills will features this ID
 
-{ "msg-type" : "push-skill" , "id" : 1, "skill" : { "name" : "moverobot_approach_region_purepursuit", "skillDefinitionFQN" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit", "in-attribute" : { "location" : "Lcoation1-Value" }, "out-attribute" : { }}}
+{ "msg-type" : "push-skill" , "id" : 1, "skill" : { "name" : "moverobot_approach_region_purepursuit", "skillDefinitionFQN" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit", "in-attribute" : { "location" : 1 }, "out-attribute" : { }}}
+
+
+{ "msg-type" : "push-skill" , "id" : 1, "skill" : { "name" : "moverobot_approach_region_purepursuit", "skillDefinitionFQN" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit", "in-attribute" : { "location" : 2 }, "out-attribute" : { }}}
 
 
   ;; PUSH RESULTS
