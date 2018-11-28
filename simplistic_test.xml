@@ -1,0 +1,16 @@
+<root main_tree_to_execute="BehaviorTree">
+
+    <BehaviorTree ID="BehaviorTree">
+        <SequenceStar>
+            <moverobot_approach_region_purepursuit  location="1"/>
+            <moverobot_approach_region_purepursuit  location="2"/>
+        </SequenceStar>
+    </BehaviorTree>
+
+    <TreeNodesModel>
+        <Action ID="moverobot_approach_region_purepursuit"/>
+        <Action ID="moverobot_approach_region_purepursuit_xy"/>
+    </TreeNodesModel>
+
+</root>
+
