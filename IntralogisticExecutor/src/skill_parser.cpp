@@ -2,26 +2,6 @@
 #include "Intralogistic/skill_interface.hpp"
 #include "Intralogistic/json.hpp"
 
-using namespace BT;
-
-/*
-{"skill" :
-        {
-                "name" : "moverobot_approach_region_purepursuit",
-                "skill-definition-fqn" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit",
-                "in-attribute" : {
-                        "location" : "String"
-                },
-                "out-attribute" : {
-                },
-                "results" : [
-                        { "result" : "ERROR", "result-value" : "UNKNOWN LOCATION" },
-                        { "result" : "ERROR", "result-value" : "ROBOT BLOCKED" },
-                        { "result" : "SUCCESS", "result-value" : "OK" },
-                        { "result" : "SUCCESS", "result-value" : "" }
-                ]
-        }
-}*/
 
 std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
 {
@@ -84,20 +64,7 @@ std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
     return definitions;
 }
 
-/*
-{
-    "msg-type" : "push-skill" ,
-    "id" : 1,
-    "skill" : {
-        "name" : "moverobot_approach_region_purepursuit",
-        "skill-definition-fqn" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit",
-        "in-attribute" : {
-            "location" : "Lcoation1-Value"
-        },
-        "out-attribute" : { }
-    }
-}
-*/
+
 std::string GenerateRequest(const SkillDefinition& definition,
                             unsigned msg_uid,
                             const BT::NodeParameters& current_params,

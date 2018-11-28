@@ -28,6 +28,8 @@ public:
                 const BT::NodeParameters& params, const char *ip,
                  zmq::context_t& context);
 
+    ~SkillAction();
+
     BT::NodeStatus tick() override;
 
     void halt() override {}
@@ -38,6 +40,8 @@ private:
     zmq::socket_t  _reply_socket;
     unsigned        _current_uid;
     BT::NodeParameters _current_params;
+    char _request_address[100];
+    char _reply_address[100];
 
     BT::NodeStatus convertResultToStatus(const std::string& result_value);
 };
