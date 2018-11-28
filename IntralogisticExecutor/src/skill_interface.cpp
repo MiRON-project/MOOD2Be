@@ -13,13 +13,25 @@ SkillAction::SkillAction(SkillDefinition definition,
     _reply_socket( context, ZMQ_SUB  ),
     _current_uid(0)
 {
-    char address[100];
-    sprintf(address, "tcp://%s:5557", ip );
-    _request_socket.connect( address );
 
-    sprintf(address, "tcp://%s:5558", ip );
-    _reply_socket.connect( address );
+    sprintf(_request_address, "tcp://%s:5557", ip );
+    _request_socket.connect( _request_address );
+
+    int timeout_ms = 500;
+    int linger_ms = 0;
+    _request_socket.setsockopt(ZMQ_SNDTIMEO, timeout_ms);
+    _request_socket.setsockopt(ZMQ_RCVTIMEO, timeout_ms);
+    _request_socket.setsockopt(ZMQ_LINGER, linger_ms);
+
+    sprintf( _reply_address, "tcp://%s:5558", ip );
+    _reply_socket.connect( _reply_address );
     _reply_socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+}
+
+SkillAction::~SkillAction()
+{
+    _request_socket.disconnect(_request_address);
+    _reply_socket.disconnect(_reply_address);
 }
 
 BT::NodeStatus SkillAction::tick()
@@ -39,12 +51,20 @@ BT::NodeStatus SkillAction::tick()
     zmq::message_t zmq_request_msg( request_msg.size() );
     memcpy( zmq_request_msg.data(), request_msg.c_str(), request_msg.size() );
 
-    _request_socket.send( zmq_request_msg );
-    //TODO timeout
+    if( !_request_socket.send( zmq_request_msg ) )
+    {
+       // timeout
+       std::cout << "send timeout" << std::endl;
+       return BT::NodeStatus::FAILURE;
+    }
     std::cout << "message sent" << std::endl;
 
     zmq::message_t ack;
-    _request_socket.recv( &ack );
+    if( !_request_socket.recv( &ack ) )
+    {
+        std::cout << "ack timeout" << std::endl;
+        return BT::NodeStatus::FAILURE;
+    }
 
     std::cout << "ack received" << std::endl;
 
@@ -56,12 +76,7 @@ BT::NodeStatus SkillAction::tick()
 
     std::string reply_value( static_cast<const char*>(reply.data()), reply.size() );
 
-  /*  { "msg-type" : "skill-result" ,
-        "id" : 1 ,
-        "result" : {"result" : "SUCCESS", "result-value" : "OK" }
-      }*/
-
-    std::cout << "REPLY:\n" <<reply_value << std::endl;
+    std::cout << "REPLY:\n" << reply_value << std::endl;
 
  //   return convertResultToStatus(reply_value);
     return BT::NodeStatus::RUNNING;
