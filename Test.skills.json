@@ -19,18 +19,62 @@
 },
 {"skill" :
 	{ 
-		"name" : "testskill",
-		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.testskill",
+		"name" : "mps_station_dock_ir",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_dock_ir",
 		"in-attribute" : {
-			"var1" : "Int",
-			"var2" : "Double",
-			"var3" : "String"
 		},
 		"out-attribute" : {
 		},
 		"results" : [ 
-			{ "result" : "ERROR", "result-value" : "UNKNOWN LOCATION" },
-			{ "result" : "ERROR", "result-value" : "ROBOT BLOCKED" },
+			{ "result" : "ERROR", "result-value" : "IR DOCKING" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
+		]
+	}
+},
+{"skill" :
+	{ 
+		"name" : "mps_station_dock_laser",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_dock_laser",
+		"in-attribute" : {
+			"beltid" : "Int"
+		},
+		"out-attribute" : {
+		},
+		"results" : [ 
+			{ "result" : "ERROR", "result-value" : "LASER DOCKING" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
+		]
+	}
+},
+{"skill" :
+	{ 
+		"name" : "mps_station_load",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_load",
+		"in-attribute" : {
+			"stationid" : "Int"
+		},
+		"out-attribute" : {
+		},
+		"results" : [ 
+			{ "result" : "ERROR", "result-value" : "LOAD LOADING" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
+		]
+	}
+},
+{"skill" :
+	{ 
+		"name" : "mps_station_unload",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_unload",
+		"in-attribute" : {
+			"stationid" : "Int"
+		},
+		"out-attribute" : {
+		},
+		"results" : [ 
+			{ "result" : "ERROR", "result-value" : "UNLOAD LOADING" },
 			{ "result" : "SUCCESS", "result-value" : "OK" },
 			{ "result" : "SUCCESS", "result-value" : "" }
 		]
