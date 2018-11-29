@@ -44,7 +44,7 @@ BT::NodeStatus SkillAction::tick()
     zmq::message_t zmq_request_msg( request_msg.size() );
     memcpy( zmq_request_msg.data(), request_msg.c_str(), request_msg.size() );
 
-    std::cout << request_msg << std::endl;
+    //std::cout << request_msg << std::endl;
 
     if( !_request_socket.send( zmq_request_msg ) )
     {
@@ -63,17 +63,20 @@ BT::NodeStatus SkillAction::tick()
 
     std::cout << "ack received" << std::endl;
 
-    // wait reply
-    //TODO
-    zmq::message_t reply;
+
     std::cout << "wait reply" << std::endl;
-    _reply_socket.recv( &reply );
+    BT::NodeStatus reply_status = BT::NodeStatus::IDLE;
 
-    std::string reply_value( static_cast<const char*>(reply.data()), reply.size() );
+    while( reply_status == BT::NodeStatus::IDLE )
+    {
+        zmq::message_t reply;
+        _reply_socket.recv( &reply );
 
-    std::cout << "REPLY:\n" << reply_value << std::endl;
+        std::string reply_json( static_cast<const char*>(reply.data()), reply.size() );
+        reply_status = convertResultToStatus(reply_json);
+    }
 
-    return convertResultToStatus(reply_value);
+    return reply_status;
 }
 
 

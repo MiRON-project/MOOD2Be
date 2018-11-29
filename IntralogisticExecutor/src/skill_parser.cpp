@@ -142,12 +142,15 @@ std::string SkillAction::generateRequest()
 BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_string)
 {
     nlohmann::json json = nlohmann::json::parse(result_string);
+
+    unsigned msg_id = json["id"];
+    if( msg_id != _current_uid)
+    {
+        return  BT::NodeStatus::IDLE;
+    }
     std::string msg_type  = json["msg-type"];
     std::string result    = json["result"]["result"];
     auto json_res_value = json["result"]["result-value"];
-
-    //TODO
-    // get and check the identifier
 
     if( json_res_value.is_string() )
     {
