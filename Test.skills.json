@@ -19,6 +19,23 @@
 },
 {"skill" :
 	{ 
+		"name" : "orientaterobot",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.orientaterobot",
+		"in-attribute" : {
+			"location" : "Int"
+		},
+		"out-attribute" : {
+		},
+		"results" : [ 
+			{ "result" : "ERROR", "result-value" : "UNKNOWN LOCATION" },
+			{ "result" : "ERROR", "result-value" : "ROBOT BLOCKED" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
+		]
+	}
+},
+{"skill" :
+	{ 
 		"name" : "mps_station_undock",
 		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_undock",
 		"in-attribute" : {
