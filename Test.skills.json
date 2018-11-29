@@ -51,30 +51,16 @@
 },
 {"skill" :
 	{ 
-		"name" : "mps_station_dock_ir",
-		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_dock_ir",
+		"name" : "mps_station_dock",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_dock",
 		"in-attribute" : {
-		},
-		"out-attribute" : {
-		},
-		"results" : [ 
-			{ "result" : "ERROR", "result-value" : "IR DOCKING" },
-			{ "result" : "SUCCESS", "result-value" : "OK" },
-			{ "result" : "SUCCESS", "result-value" : "" }
-		]
-	}
-},
-{"skill" :
-	{ 
-		"name" : "mps_station_dock_laser",
-		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_dock_laser",
-		"in-attribute" : {
+			"stationid" : "Int",
 			"beltid" : "Int"
 		},
 		"out-attribute" : {
 		},
 		"results" : [ 
-			{ "result" : "ERROR", "result-value" : "LASER DOCKING" },
+			{ "result" : "ERROR", "result-value" : "DOCKING FAILED" },
 			{ "result" : "SUCCESS", "result-value" : "OK" },
 			{ "result" : "SUCCESS", "result-value" : "" }
 		]
