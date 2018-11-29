@@ -44,6 +44,8 @@ private:
     char _reply_address[100];
 
     BT::NodeStatus convertResultToStatus(const std::string& result_value);
+
+    std::string generateRequest();
 };
 
 inline unsigned GetUID()

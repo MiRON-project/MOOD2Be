@@ -36,25 +36,20 @@ SkillAction::~SkillAction()
 
 BT::NodeStatus SkillAction::tick()
 {
-    // read node parameters
-    for(const auto& param: initializationParameters() )
-    {
-        const auto& key = param.first;
-        _current_params[key] = getParam<std::string>(key).value();
-    }
-
     // create the message
     _current_uid = GetUID();
-    std::string request_msg = GenerateRequest(_definition, _current_uid, _current_params, 1);
+    std::string request_msg = generateRequest();
 
     // send the message
     zmq::message_t zmq_request_msg( request_msg.size() );
     memcpy( zmq_request_msg.data(), request_msg.c_str(), request_msg.size() );
 
+    std::cout << request_msg << std::endl;
+
     if( !_request_socket.send( zmq_request_msg ) )
     {
        // timeout
-       std::cout << "send timeout" << std::endl;
+       std::cout << "send TIMEOUT" << std::endl;
        return BT::NodeStatus::FAILURE;
     }
     std::cout << "message sent" << std::endl;
@@ -62,7 +57,7 @@ BT::NodeStatus SkillAction::tick()
     zmq::message_t ack;
     if( !_request_socket.recv( &ack ) )
     {
-        std::cout << "ack timeout" << std::endl;
+        std::cout << "ack TIMEOUT" << std::endl;
         return BT::NodeStatus::FAILURE;
     }
 
@@ -78,23 +73,9 @@ BT::NodeStatus SkillAction::tick()
 
     std::cout << "REPLY:\n" << reply_value << std::endl;
 
- //   return convertResultToStatus(reply_value);
-    return BT::NodeStatus::RUNNING;
+    return convertResultToStatus(reply_value);
 }
 
-BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_value)
-{
-    const std::string bb_result_key = _definition.ID + "::last_result";
 
-    // convert result value in NodeStatus
-    for(const auto& result: _definition.possible_results)
-    {
-        if( result.value == result_value)
-        {
-            blackboard()->set( bb_result_key, result_value );
-            return result.res;
-        }
-    }
-    // this policy (throw) may change in the future
-    throw std::runtime_error( "Result received is not recognized as a valid one");
-}
+
+
