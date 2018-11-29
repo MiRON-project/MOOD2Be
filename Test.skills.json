@@ -2,8 +2,8 @@
 [
 {"skill" :
 	{ 
-		"name" : "moverobot_approach_region_purepursuit",
-		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.moverobot_approach_region_purepursuit",
+		"name" : "moverobot",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.moverobot",
 		"in-attribute" : {
 			"location" : "Int"
 		},
@@ -12,6 +12,21 @@
 		"results" : [ 
 			{ "result" : "ERROR", "result-value" : "UNKNOWN LOCATION" },
 			{ "result" : "ERROR", "result-value" : "ROBOT BLOCKED" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
+		]
+	}
+},
+{"skill" :
+	{ 
+		"name" : "mps_station_undock",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.mps_station_undock",
+		"in-attribute" : {
+		},
+		"out-attribute" : {
+		},
+		"results" : [ 
+			{ "result" : "ERROR", "result-value" : "UNDOCKING FAILED" },
 			{ "result" : "SUCCESS", "result-value" : "OK" },
 			{ "result" : "SUCCESS", "result-value" : "" }
 		]
