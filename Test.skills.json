@@ -97,5 +97,35 @@
 			{ "result" : "SUCCESS", "result-value" : "" }
 		]
 	}
+},
+{"skill" :
+	{ 
+		"name" : "manual_load",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.manual_load",
+		"in-attribute" : {
+		},
+		"out-attribute" : {
+		},
+		"results" : [ 
+			{ "result" : "ERROR", "result-value" : "LOAD LOADING" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
+		]
+	}
+},
+{"skill" :
+	{ 
+		"name" : "manual_unload",
+		"skill-definition-fqn" : "CommNavigationObjects.CdlSkills.manual_unload",
+		"in-attribute" : {
+		},
+		"out-attribute" : {
+		},
+		"results" : [ 
+			{ "result" : "ERROR", "result-value" : "LOAD UNLOADING" },
+			{ "result" : "SUCCESS", "result-value" : "OK" },
+			{ "result" : "SUCCESS", "result-value" : "" }
+		]
+	}
 }
 ]
