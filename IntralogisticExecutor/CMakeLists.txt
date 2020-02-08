@@ -30,7 +30,7 @@ add_executable(${PROJECT_NAME}
     src/executor.cpp
     )
 
-target_link_libraries(${PROJECT_NAME} behaviortree_cpp dl pthread zmq)
+target_link_libraries(${PROJECT_NAME} behaviortree_cpp_v3 dl pthread zmq)
 
 add_executable( zmq_dummy_server zmq_server.cpp )
 target_link_libraries(zmq_dummy_server pthread zmq)
