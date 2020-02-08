@@ -100,23 +100,23 @@ std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
 }
 
 
-std::string GenerateRequest(const SkillDefinition& definition,
-                            unsigned msg_uid,
-                            const BT::NodeConfiguration &current_params,
-                            int indent)
-{
-    nlohmann::json json;
-    json["msg-type"] = "push-skill";
-    json["id"] = msg_uid;
+//std::string GenerateRequest(const SkillDefinition& definition,
+//                            unsigned msg_uid,
+//                            const BT::NodeConfiguration &current_params,
+//                            int indent)
+//{
+//    nlohmann::json json;
+//    json["msg-type"] = "push-skill";
+//    json["id"] = msg_uid;
 
-    auto& skill = json["skill"];
-    skill["name"] = definition.ID;
-    skill["skill-definition-fqn"] = definition.skill_FQN;
-    skill["out-attribute"] = nlohmann::json({});
-    skill["in-attribute"] = current_params;
+//    auto& skill = json["skill"];
+//    skill["name"] = definition.ID;
+//    skill["skill-definition-fqn"] = definition.skill_FQN;
+//    skill["out-attribute"] = nlohmann::json({});
+//    skill["in-attribute"] = current_params;
 
-    return json.dump(indent);
-}
+//    return json.dump(indent);
+//}
 
 std::string SkillAction::generateRequest()
 {
@@ -130,7 +130,7 @@ std::string SkillAction::generateRequest()
     skill["out-attribute"] = nlohmann::json({});
     auto& in_attribute = skill["in-attribute"] = nlohmann::json({});
 
-    // read node parameters
+    // read all the inputs
     for(const auto& port_pair: _definition.ports )
     {
         const auto& key  = port_pair.first;
@@ -162,7 +162,6 @@ std::string SkillAction::generateRequest()
             in_attribute.push_back( {key, val.value() } );
         }
     }
-
     return json.dump(1);
 }
 
@@ -183,7 +182,8 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_stri
     {
         const std::string bb_result_key = _definition.ID + "::last_result";
         std::string res_value = json_res_value;
-        blackboard()->set( bb_result_key, res_value );
+//   TODO. What should I do with this string?
+//        blackboard()->set( bb_result_key, res_value );
     }
 
     std::transform(result.begin(), result.end(), result.begin(), ::toupper);
