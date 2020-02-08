@@ -1,14 +1,14 @@
 #ifndef SKILL_INTERFACE_HPP
 #define SKILL_INTERFACE_HPP
 
-#include <behaviortree_cpp/behavior_tree.h>
+#include <behaviortree_cpp_v3/behavior_tree.h>
 #include <zmq.hpp>
 
 struct SkillDefinition
 {
     std::string ID;
     std::string skill_FQN;
-    BT::NodeParameters params;
+    BT::PortsList ports;
 
     struct ReturnValue{
         BT::NodeStatus res;
@@ -25,8 +25,9 @@ class SkillAction: public BT::ActionNodeBase
 public:
     SkillAction(SkillDefinition definition,
                 const std::string& instance_name,
-                const BT::NodeParameters& params, const char *ip,
-                 zmq::context_t& context);
+                const BT::NodeConfiguration& config,
+                const char *ip,
+                zmq::context_t& context);
 
     ~SkillAction();
 
@@ -39,7 +40,7 @@ private:
     zmq::socket_t  _request_socket;
     zmq::socket_t  _reply_socket;
     unsigned        _current_uid;
-    BT::NodeParameters _current_params;
+    BT::NodeConfiguration _current_params;
     char _request_address[100];
     char _reply_address[100];
 
@@ -56,7 +57,7 @@ inline unsigned GetUID()
 
 std::string GenerateRequest(const SkillDefinition& definition,
                             unsigned msg_uid ,
-                            const BT::NodeParameters &current_params,
+                            const BT::NodeConfiguration &current_params,
                             int indent = -1);
 
 #endif // SKILL_INTERFACE_HPP

@@ -31,21 +31,47 @@ std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
         definition.ID = skill["name"];
         definition.skill_FQN = skill["skill-definition-fqn"];
 
+        //----------------
         const auto& inAttributes = skill["in-attribute"];
-
         for (auto it = inAttributes.begin(); it != inAttributes.end(); it++)
         {
-            std::string key   = it.key();
+            std::string key  = it.key();
             std::string type = it.value();
 
-            if( supported_types.count(type) == 0)
-            {
-                throw std::runtime_error("Error in [in-attribute]: We don't support this type: " + type);
+            if( type == "String"){
+              definition.ports.insert( BT::InputPort<std::string>( key ));
             }
-
-            definition.params.insert( { key, type} );
+            else if( type == "Int" || type == "Integer") {
+              definition.ports.insert( BT::InputPort<int>( key ) );
+            }
+            else if( type == "Double") {
+              definition.ports.insert( BT::InputPort<double>( key ) );
+            }
+            else{
+              throw std::runtime_error("Error in [in-attribute]: We don't support this type: " + type);
+            }
         }
+        //----------------
+        const auto& outAttributes = skill["out-attribute"];
+        for (auto it = outAttributes.begin(); it != outAttributes.end(); it++)
+        {
+          std::string key  = it.key();
+          std::string type = it.value();
 
+          if( type == "String"){
+            definition.ports.insert( BT::OutputPort<std::string>( key ));
+          }
+          else if( type == "Int" || type == "Integer") {
+            definition.ports.insert( BT::OutputPort<int>( key ) );
+          }
+          else if( type == "Double") {
+            definition.ports.insert( BT::OutputPort<double>( key ) );
+          }
+          else{
+            throw std::runtime_error("Error in [in-attribute]: We don't support this type: " + type);
+          }
+        }
+        //----------------
         const auto& results = skill["results"];
         for (const auto& result: results)
         {
@@ -76,7 +102,7 @@ std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
 
 std::string GenerateRequest(const SkillDefinition& definition,
                             unsigned msg_uid,
-                            const BT::NodeParameters& current_params,
+                            const BT::NodeConfiguration &current_params,
                             int indent)
 {
     nlohmann::json json;
@@ -105,30 +131,31 @@ std::string SkillAction::generateRequest()
     auto& in_attribute = skill["in-attribute"] = nlohmann::json({});
 
     // read node parameters
-    for(const auto& param: initializationParameters() )
+    for(const auto& port_pair: _definition.ports )
     {
-        const auto& key  = param.first;
-        const auto& type = _definition.params.at(key);
+        const auto& key  = port_pair.first;
+        const BT::PortInfo& info = port_pair.second;
+        auto type = info.type();
 
-        if( type == "String")
+        if( *type == typeid(std::string) )
         {
-            auto val = getParam<std::string>(key);
+            auto val = getInput<std::string>(key);
             if( !val ){
                 throw std::runtime_error( "Invalid parameter at key: " + key );
             }
             in_attribute.push_back( {key, val.value() } );
         }
-        else if( type == "Double")
+        else if( *type == typeid(double) )
         {
-            auto val = getParam<double>(key);
+            auto val = getInput<double>(key);
             if( !val ){
                 throw std::runtime_error( "Invalid parameter at key: " + key );
             }
             in_attribute.push_back( {key, val.value() } );
         }
-        else if( type == "Integer" || type == "Int" )
+        else if( *type == typeid(int) )
         {
-            auto val = getParam<int>(key);
+            auto val = getInput<int>(key);
             if( !val ){
                 throw std::runtime_error( "Invalid parameter at key: " + key );
             }
