@@ -2,6 +2,15 @@
 
 Temporary repository for MOOD2Be-related artifacts
 
+# Compilation instructions (Ubuntu Linux)
+`cd MOOD2Be`
+`mkdir build`
+`cmake ..`
+`make`
+
+Executable files are in: MOOD2Be/build/Executor
+
+
 # Get started with Groot
 
 
