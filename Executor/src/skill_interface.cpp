@@ -1,13 +1,13 @@
 #include <fstream>
-#include <behaviortree_cpp/bt_factory.h>
+#include <behaviortree_cpp_v3/bt_factory.h>
 #include "Intralogistic/skill_interface.hpp"
 
 SkillAction::SkillAction(SkillDefinition definition,
                          const std::string &instance_name,
-                         const BT::NodeParameters &params,
+                         const BT::NodeConfiguration &config,
                          const char* ip,
                          zmq::context_t& context):
-    BT::ActionNodeBase(instance_name, params),
+    BT::ActionNodeBase(instance_name, config),
     _definition(std::move(definition)),
     _request_socket( context, ZMQ_REQ ),
     _reply_socket( context, ZMQ_SUB  ),

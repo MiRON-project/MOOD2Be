@@ -1,12 +1,11 @@
-#include <behaviortree_cpp/blackboard/blackboard_local.h>
-#include <behaviortree_cpp/bt_factory.h>
-#include <behaviortree_cpp/behavior_tree.h>
-#include <behaviortree_cpp/xml_parsing.h>
+#include <behaviortree_cpp_v3/bt_factory.h>
+#include <behaviortree_cpp_v3/behavior_tree.h>
+#include <behaviortree_cpp_v3/xml_parsing.h>
 #include <list>
 
-#include <behaviortree_cpp/loggers/bt_cout_logger.h>
-#include <behaviortree_cpp/loggers/bt_file_logger.h>
-#include <behaviortree_cpp/loggers/bt_zmq_publisher.h>
+#include <behaviortree_cpp_v3/loggers/bt_cout_logger.h>
+#include <behaviortree_cpp_v3/loggers/bt_file_logger.h>
+#include <behaviortree_cpp_v3/loggers/bt_zmq_publisher.h>
 
 #include "Intralogistic/args.hpp"
 #include "Intralogistic/skill_interface.hpp"
@@ -42,26 +41,25 @@ int main(int argc, char** argv)
     // register an action for each Skill
     for (const auto& def: definitions )
     {
-        auto creator = [def, &zmq_context, &arg](const std::string& name, const NodeParameters& params)
+        auto creator = [def, &zmq_context, &arg](const std::string& name, const NodeConfiguration& config)
         {
-            return std::unique_ptr<TreeNode>( new SkillAction(def, name, params, arg.IP.c_str(), zmq_context) );
+            return std::unique_ptr<TreeNode>( new SkillAction(def, name, config, arg.IP.c_str(), zmq_context) );
         };
-        TreeNodeManifest manifest = { NodeType::ACTION, def.ID, def.params };
+        TreeNodeManifest manifest = { NodeType::ACTION, def.ID, def.ports };
         factory.registerBuilder( manifest, creator );
     }
 
     for (const auto& model : factory.manifests())
     {
-        std::cout << model.registration_ID << std::endl;
+        std::cout << model.first << std::endl;
     }
 
-    auto blackboard = Blackboard::create<BlackboardLocal>();
-    auto tree = BT::buildTreeFromFile(factory, arg.tree_file, blackboard);
+    auto tree = factory.createTreeFromFile( arg.tree_file );
 
     // add loggers
-    StdCoutLogger logger_cout(tree.root_node);
-    FileLogger logger_file(tree.root_node, "ulm_trace.fbl");
-    PublisherZMQ publisher_zmq(tree.root_node);
+    StdCoutLogger logger_cout(tree);
+    FileLogger logger_file(tree, "ulm_trace.fbl");
+    PublisherZMQ publisher_zmq(tree);
 
     //------------------------------------------------------
     // Execute the tree
