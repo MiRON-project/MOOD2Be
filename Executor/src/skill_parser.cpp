@@ -21,7 +21,7 @@ std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
 
     const std::unordered_set<std::string> supported_types =
     {
-        "String", "Int", "Double", "Integer"
+        "String", "Int", "Double", "Integer", "Bool"
     };
 
     for (const auto& item: doc)
@@ -47,6 +47,9 @@ std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
             else if( type == "Double") {
               definition.ports.insert( BT::InputPort<double>( key ) );
             }
+            else if( type == "Bool" || type == "Boolean") {
+              definition.ports.insert( BT::InputPort<bool>( key ) );
+            }
             else{
               throw std::runtime_error("Error in [in-attribute]: We don't support this type: " + type);
             }
@@ -66,6 +69,9 @@ std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
           }
           else if( type == "Double") {
             definition.ports.insert( BT::OutputPort<double>( key ) );
+          }
+          else if( type == "Bool" || type == "Boolean") {
+            definition.ports.insert( BT::OutputPort<bool>( key ) );
           }
           else{
             throw std::runtime_error("Error in [in-attribute]: We don't support this type: " + type);
@@ -127,39 +133,74 @@ std::string SkillAction::generateRequest()
     auto& skill = json["skill"];
     skill["name"] = _definition.ID;
     skill["skill-definition-fqn"] = _definition.skill_FQN;
-    skill["out-attribute"] = nlohmann::json({});
+    auto& out_attribute = skill["out-attribute"] = nlohmann::json({});
     auto& in_attribute = skill["in-attribute"] = nlohmann::json({});
 
     // read all the inputs
     for(const auto& port_pair: _definition.ports )
     {
-        const auto& key  = port_pair.first;
-        const BT::PortInfo& info = port_pair.second;
-        auto type = info.type();
+        if (port_pair.second.direction() == BT::PortDirection::INPUT)
+        {
+            const auto& key  = port_pair.first;
+            const BT::PortInfo& info = port_pair.second;
+            auto type = info.type();
 
-        if( *type == typeid(std::string) )
-        {
-            auto val = getInput<std::string>(key);
-            if( !val ){
-                throw std::runtime_error( "Invalid parameter at key: " + key );
+            if( *type == typeid(std::string) )
+            {
+                auto val = getInput<std::string>(key);
+                if( !val ){
+                    throw std::runtime_error( "Invalid parameter at key: " + key );
+                }
+                in_attribute.push_back( {key, val.value() } );
             }
-            in_attribute.push_back( {key, val.value() } );
+            else if( *type == typeid(double) )
+            {
+                auto val = getInput<double>(key);
+                if( !val ){
+                    throw std::runtime_error( "Invalid parameter at key: " + key );
+                }
+                in_attribute.push_back( {key, val.value() } );
+            }
+            else if( *type == typeid(int) )
+            {
+                auto val = getInput<int>(key);
+                if( !val ){
+                    throw std::runtime_error( "Invalid parameter at key: " + key );
+                }
+                in_attribute.push_back( {key, val.value() } );
+            }
+            else if( *type == typeid(bool) )
+            {
+                auto val = getInput<bool>(key);
+                if( !val ){
+                    throw std::runtime_error( "Invalid parameter at key: " + key );
+                }
+                in_attribute.push_back( {key, val.value() } );
+            }
+            else
+                throw std::runtime_error( "Invalid parameter at key: " + key );
         }
-        else if( *type == typeid(double) )
+    }
+
+    // setting all the outputs
+    for(const auto& port_pair: _definition.ports )
+    {
+        if (port_pair.second.direction() == BT::PortDirection::OUTPUT)
         {
-            auto val = getInput<double>(key);
-            if( !val ){
+            const auto& key  = port_pair.first;
+            const BT::PortInfo& info = port_pair.second;
+            auto type = info.type();
+
+            if( *type == typeid(std::string) )
+                out_attribute.push_back( {key, "" } );
+            else if( *type == typeid(double) )
+                out_attribute.push_back( {key, 0.0 } );
+            else if( *type == typeid(int) )
+                out_attribute.push_back( {key, 0 } );
+            else if( *type == typeid(bool) )
+                out_attribute.push_back( {key, true } );
+            else 
                 throw std::runtime_error( "Invalid parameter at key: " + key );
-            }
-            in_attribute.push_back( {key, val.value() } );
-        }
-        else if( *type == typeid(int) )
-        {
-            auto val = getInput<int>(key);
-            if( !val ){
-                throw std::runtime_error( "Invalid parameter at key: " + key );
-            }
-            in_attribute.push_back( {key, val.value() } );
         }
     }
     return json.dump(1);
