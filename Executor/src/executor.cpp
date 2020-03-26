@@ -69,7 +69,7 @@ int main(int argc, char** argv)
         // Keep on ticking until you get either a SUCCESS or FAILURE state
         while( status == NodeStatus::RUNNING)
         {
-            status = tree.root_node->executeTick();
+            status = tree.tickRoot();
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
     }
