@@ -216,6 +216,10 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_stri
         return  BT::NodeStatus::IDLE;
     }
     std::string msg_type  = json["msg-type"];
+
+    if (msg_type != "skill-result")
+        return  BT::NodeStatus::IDLE;
+
     std::string result    = json["result"]["result"];
     auto json_res_value = json["result"]["result-value"];
 
@@ -223,6 +227,7 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_stri
     {
         const std::string bb_result_key = _definition.ID + "::last_result";
         std::string res_value = json_res_value;
+        
 //   TODO. What should I do with this string?
 //        blackboard()->set( bb_result_key, res_value );
     }
@@ -232,7 +237,7 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_stri
     {
         return BT::NodeStatus::SUCCESS;
     }
-    else if( result == "ERROR")
+    else if( result == "ERROR" || result == "ABORT")
     {
         return BT::NodeStatus::FAILURE;
     }
