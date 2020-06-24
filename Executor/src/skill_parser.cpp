@@ -105,25 +105,6 @@ std::vector<SkillDefinition> ParseSkillFile(const std::string &filename)
     return definitions;
 }
 
-
-//std::string GenerateRequest(const SkillDefinition& definition,
-//                            unsigned msg_uid,
-//                            const BT::NodeConfiguration &current_params,
-//                            int indent)
-//{
-//    nlohmann::json json;
-//    json["msg-type"] = "push-skill";
-//    json["id"] = msg_uid;
-
-//    auto& skill = json["skill"];
-//    skill["name"] = definition.ID;
-//    skill["skill-definition-fqn"] = definition.skill_FQN;
-//    skill["out-attribute"] = nlohmann::json({});
-//    skill["in-attribute"] = current_params;
-
-//    return json.dump(indent);
-//}
-
 std::string SkillAction::generateRequest()
 {
     nlohmann::json json;

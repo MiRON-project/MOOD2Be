@@ -9,6 +9,7 @@
 
 #include "Intralogistic/args.hpp"
 #include "Intralogistic/skill_interface.hpp"
+#include "Intralogistic/variant_action.hpp"
 
 using namespace BT;
 
@@ -49,12 +50,23 @@ int main(int argc, char** argv)
         factory.registerBuilder( manifest, creator );
     }
 
+    // Register Variant Action
+    TreeNodeManifest manif;
+    manif.type = NodeType::ACTION;
+    manif.registration_ID = "VariantAction";
+    auto creator = [&zmq_context, &arg](const std::string& name, const NodeConfiguration& config)
+    {
+        return std::unique_ptr<TreeNode>(new VariantAction(name, config, 
+            arg.IP.c_str(), zmq_context));
+    };
+    factory.registerBuilder(manif, creator);
+
     for (const auto& model : factory.manifests())
     {
         std::cout << model.first << std::endl;
     }
 
-    auto tree = factory.createTreeFromFile( arg.tree_file );
+    auto tree = factory.createTreeFromFile(arg.tree_file);
 
     // add loggers
     StdCoutLogger logger_cout(tree);
@@ -63,16 +75,14 @@ int main(int argc, char** argv)
 
     //------------------------------------------------------
     // Execute the tree
-    //while (1)
+    NodeStatus status = NodeStatus::RUNNING;
+    // Keep on ticking until you get either a SUCCESS or FAILURE state
+    while( status == NodeStatus::RUNNING)
     {
-        NodeStatus status = NodeStatus::RUNNING;
-        // Keep on ticking until you get either a SUCCESS or FAILURE state
-        while( status == NodeStatus::RUNNING)
-        {
-            status = tree.tickRoot();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        }
+        status = tree.tickRoot();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+
     return 0;
 }
 

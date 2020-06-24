@@ -55,9 +55,4 @@ inline unsigned GetUID()
     return ++count;
 }
 
-std::string GenerateRequest(const SkillDefinition& definition,
-                            unsigned msg_uid ,
-                            const BT::NodeConfiguration &current_params,
-                            int indent = -1);
-
 #endif // SKILL_INTERFACE_HPP
