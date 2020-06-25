@@ -50,7 +50,7 @@ find_package(ZMQ REQUIRED)
 
 
 add_executable(${PROJECT_NAME}
-    src/skill_interface.cpp
+    src/skill_action.cpp
     src/skill_parser.cpp
     src/variant_action.cpp
     src/executor.cpp

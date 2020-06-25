@@ -8,7 +8,7 @@
 #include <behaviortree_cpp_v3/loggers/bt_zmq_publisher.h>
 
 #include "Intralogistic/args.hpp"
-#include "Intralogistic/skill_interface.hpp"
+#include "Intralogistic/skill_action.hpp"
 #include "Intralogistic/variant_action.hpp"
 
 using namespace BT;
