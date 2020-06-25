@@ -35,25 +35,27 @@ int main(int argc, char** argv)
 
     zmq::context_t zmq_context(1);
 
-    auto definitions = ParseSkillFile( arg.skills_file );
+    auto definitions = ParseSkillFile(arg.skills_file);
 
     BehaviorTreeFactory factory;
 
     // register an action for each Skill
-    for (const auto& def: definitions )
+    for (const auto& def: definitions)
     {
-        auto creator = [def, &zmq_context, &arg](const std::string& name, const NodeConfiguration& config)
-        {
-            return std::unique_ptr<TreeNode>( new SkillAction(def, name, config, arg.IP.c_str(), zmq_context) );
+        auto creator = [def, &zmq_context, &arg](const std::string& name, 
+                const NodeConfiguration& config) {
+            return std::unique_ptr<TreeNode>( new SkillAction(def, name, 
+                config, arg.IP.c_str(), zmq_context));
         };
         TreeNodeManifest manifest = { NodeType::ACTION, def.ID, def.ports };
-        factory.registerBuilder( manifest, creator );
+        factory.registerBuilder(manifest, creator);
     }
 
     // Register Variant Action
     TreeNodeManifest manif;
     manif.type = NodeType::ACTION;
     manif.registration_ID = "VariantAction";
+    manif.ports = BT::PortsList{BT::OutputPort<std::string>("value")};
     auto creator = [&zmq_context, &arg](const std::string& name, const NodeConfiguration& config)
     {
         return std::unique_ptr<TreeNode>(new VariantAction(name, config, 
@@ -92,21 +94,23 @@ Arguments ParseArguments(int argc, char** argv)
 {
     // Read more about args here: https://github.com/Taywee/args
 
-    args::ArgumentParser parser("BehaviorTree.CPP Executor", "Load one or multiple plugins and the XML with the tree definition.");
+    args::ArgumentParser parser("BehaviorTree.CPP Executor", "Load one or "
+        "multiple plugins and the XML with the tree definition.");
     args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
 
-    args::Group arguments(parser, "arguments", args::Group::Validators::DontCare, args::Options::Global);
+    args::Group arguments(parser, "arguments", 
+        args::Group::Validators::DontCare, args::Options::Global);
 
     args::ValueFlag<std::string> tree_path(arguments, "path",
-                                           "The XML containing the BehaviorTree ", {'t', "tree"},
+        "The XML containing the BehaviorTree ", {'t', "tree"},
                                            args::Options::Required);
 
     args::ValueFlag<std::string> skills_path( arguments, "path",
-                                              "JSON file containing the list of SmartSoft skills", {'s', "skills"},
+        "JSON file containing the list of SmartSoft skills", {'s', "skills"},
                                               args::Options::Required);
 
     args::ValueFlag<std::string> server_ip(arguments, "ip",
-                                           "IP of the server", {"ip"}, "localhost" );
+        "IP of the server", {"ip"}, "localhost" );
     try
     {
         parser.ParseCLI(argc, argv);
