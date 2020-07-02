@@ -10,34 +10,32 @@ VariantAction::VariantAction(const std::string &instance_name,
   BT::CoroActionNode(instance_name, config),
   _request_socket( context, ZMQ_REQ ),
   _reply_socket( context, ZMQ_SUB  ),
-  _current_uid(0)
+  _current_uid(GetUID())
 {
-    sprintf(_request_address, "tcp://%s:8274", ip );
-    _request_socket.connect( _request_address );
+  sprintf(_request_address, "tcp://%s:8274", ip );
+  _request_socket.connect( _request_address );
 
-    int timeout_ms = 1000;
-    int linger_ms = 0;
-    _request_socket.setsockopt(ZMQ_SNDTIMEO, timeout_ms);
-    _request_socket.setsockopt(ZMQ_RCVTIMEO, timeout_ms);
-    _request_socket.setsockopt(ZMQ_LINGER, linger_ms);
+  int timeout_ms = 1000;
+  int linger_ms = 0;
+  _request_socket.setsockopt(ZMQ_SNDTIMEO, timeout_ms);
+  _request_socket.setsockopt(ZMQ_RCVTIMEO, timeout_ms);
+  _request_socket.setsockopt(ZMQ_LINGER, linger_ms);
 
-    timeout_ms = 1;
-    sprintf(_reply_address, "tcp://%s:8275", ip);
-    _reply_socket.connect(_reply_address);
-    _reply_socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
-    _reply_socket.setsockopt(ZMQ_RCVTIMEO, timeout_ms);
+  timeout_ms = 1;
+  sprintf(_reply_address, "tcp://%s:8275", ip);
+  _reply_socket.connect(_reply_address);
+  _reply_socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+  _reply_socket.setsockopt(ZMQ_RCVTIMEO, timeout_ms);
 }
 
 VariantAction::~VariantAction()
 {
-    _request_socket.disconnect(_request_address);
-    _reply_socket.disconnect(_reply_address);
+  _request_socket.disconnect(_request_address);
+  _reply_socket.disconnect(_reply_address);
 }
 
 BT::NodeStatus VariantAction::tick()
 {
-  _current_uid = GetUID();
-
   // create the message
   std::string request_msg = generateRequest();
 
@@ -46,12 +44,14 @@ BT::NodeStatus VariantAction::tick()
   memcpy(zmq_request_msg.data(), request_msg.c_str(), request_msg.size() );
 
   if(!_request_socket.send(zmq_request_msg)) {
-      return BT::NodeStatus::FAILURE;
+    std::cout << "VariantAction send Fails\n";
+    return BT::NodeStatus::FAILURE;
   }
 
   zmq::message_t ack;
   if(!_request_socket.recv(&ack))
   {
+    std::cout << "VariantAction ack Fails\n";
     return BT::NodeStatus::FAILURE;
   }
 
@@ -104,7 +104,7 @@ BT::NodeStatus VariantAction::parseAnswer(const std::string &result_string)
   else bb_value_ = "";
   
   if (bb_value_.empty()) 
-    return BT::NodeStatus::FAILURE;
+    return BT::NodeStatus::IDLE;
 
   try {
     setOutput<std::string>("value", bb_value_);
