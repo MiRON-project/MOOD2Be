@@ -50,24 +50,18 @@ BT::NodeStatus SkillAction::tick()
 
   if (!_request_socket.send(zmq_request_msg))
   {
-    // timeout
-    std::cout << "send TIMEOUT" << std::endl;
+    std::cout << "SkillAction send Fails\n";
     return BT::NodeStatus::FAILURE;
   }
-  std::cout << "message sent" << std::endl;
 
   zmq::message_t ack;
   if (!_request_socket.recv(&ack))
   {
-    std::cout << "ack TIMEOUT" << std::endl;
+    std::cout << "SkillAction ack Fails\n";
     return BT::NodeStatus::FAILURE;
   }
 
-  std::cout << "ack received" << std::endl;
-
-  std::cout << "wait reply" << std::endl;
   BT::NodeStatus reply_status = BT::NodeStatus::IDLE;
-
   while (reply_status == BT::NodeStatus::IDLE)
   {
     zmq::message_t reply;
