@@ -103,6 +103,21 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_stri
     //        blackboard()->set( bb_result_key, res_value );
   }
 
+  const auto &output = json["outputs"];
+  for (auto it = output.begin(); it != output.end(); it++)
+  {
+    if (it.value().is_boolean()) 
+      setOutput(it.key(), it.value().get<bool>());
+    else if (it.value().is_number_integer())
+      setOutput(it.key(), it.value().get<int>());
+    else if (it.value().is_number_float())
+      setOutput(it.key(), it.value().get<double>());
+    else if (it.value().is_string())
+      setOutput(it.key(), it.value().get<std::string>());
+    else
+      throw std::runtime_error("Unsuported type json");
+  }
+
   std::transform(result.begin(), result.end(), result.begin(), ::toupper);
   if (result == "SUCCESS")
   {
