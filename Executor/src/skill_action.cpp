@@ -106,12 +106,33 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_stri
   const auto &output = json["outputs"];
   for (auto it = output.begin(); it != output.end(); it++)
   {
+    
     if (it.value().is_boolean()) 
       setOutput(it.key(), it.value().get<bool>());
-    else if (it.value().is_number_integer())
-      setOutput(it.key(), it.value().get<int>());
-    else if (it.value().is_number_float())
-      setOutput(it.key(), it.value().get<double>());
+    else if (it.value().is_number_float()) {
+      try {
+        setOutput(it.key(), it.value().get<double>());
+        continue;
+      }
+      catch (...){};
+      try {
+        setOutput(it.key(), it.value().get<float>());
+        continue;
+      }
+      catch (...){};
+    }
+    else if (it.value().is_number_integer()) {
+      try {
+        setOutput(it.key(), it.value().get<int>());
+        continue;
+      }
+      catch (...){};
+      try {
+        setOutput(it.key(), it.value().get<double>());
+        continue;
+      }
+      catch (...){};
+    }
     else if (it.value().is_string())
       setOutput(it.key(), it.value().get<std::string>());
     else
