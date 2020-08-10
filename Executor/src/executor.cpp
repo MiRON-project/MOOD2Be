@@ -10,6 +10,7 @@
 #include "Intralogistic/args.hpp"
 #include "Intralogistic/skill_action.hpp"
 #include "Intralogistic/variant_action.hpp"
+#include "Intralogistic/execute_path_action.hpp"
 
 using namespace BT;
 
@@ -62,6 +63,19 @@ int main(int argc, char** argv)
             arg.IP.c_str(), zmq_context));
     };
     factory.registerBuilder(manif, creator);
+
+    // Register ExecutePath Action
+    manif.type = NodeType::ACTION;
+    manif.registration_ID = "ExecutePathAction";
+    manif.ports = BT::PortsList{
+        BT::InputPort<std::string>("waypoints"),
+        BT::OutputPort<double>("w_x"),
+        BT::OutputPort<double>("w_y")};
+    auto execute_path_creator = [](const std::string& name, const NodeConfiguration& config)
+    {
+        return std::unique_ptr<TreeNode>(new ExecutePathAction(name, config));
+    };
+    factory.registerBuilder(manif, execute_path_creator);
 
     for (const auto& model : factory.manifests())
     {

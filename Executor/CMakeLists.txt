@@ -53,6 +53,7 @@ add_executable(${PROJECT_NAME}
     src/skill_action.cpp
     src/skill_parser.cpp
     src/variant_action.cpp
+    src/execute_path_action.cpp
     src/executor.cpp
     )
 
