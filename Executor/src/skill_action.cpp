@@ -106,7 +106,6 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_stri
   const auto &output = json["outputs"];
   for (auto it = output.begin(); it != output.end(); it++)
   {
-    
     if (it.value().is_boolean()) 
       setOutput(it.key(), it.value().get<bool>());
     else if (it.value().is_number_float()) {
@@ -133,10 +132,11 @@ BT::NodeStatus SkillAction::convertResultToStatus(const std::string &result_stri
       }
       catch (...){};
     }
-    else if (it.value().is_string())
+    else if (it.value().is_string()) {
       setOutput(it.key(), it.value().get<std::string>());
+    }
     else
-      throw std::runtime_error("Unsuported type json");
+      throw BT::RuntimeError("Unsuported type json");
   }
 
   std::transform(result.begin(), result.end(), result.begin(), ::toupper);
