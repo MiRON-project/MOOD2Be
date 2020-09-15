@@ -55,6 +55,7 @@ add_executable(${PROJECT_NAME}
     src/variant_action.cpp
     src/execute_path_action.cpp
     src/executor.cpp
+    src/check_positive_condition.cpp
     )
 
 target_link_libraries(${PROJECT_NAME} behaviortree_cpp_v3 dl pthread zmq)
