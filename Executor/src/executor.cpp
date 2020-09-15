@@ -11,6 +11,7 @@
 #include "Intralogistic/skill_action.hpp"
 #include "Intralogistic/variant_action.hpp"
 #include "Intralogistic/execute_path_action.hpp"
+#include "Intralogistic/check_positive_condition.hpp"
 
 using namespace BT;
 
@@ -76,6 +77,14 @@ int main(int argc, char** argv)
         return std::unique_ptr<TreeNode>(new ExecutePathAction(name, config));
     };
     factory.registerBuilder(manif, execute_path_creator);
+
+    BT::NodeBuilder check_positive_condition_builder = [](const std::string& name, 
+        const BT::NodeConfiguration& config)
+    {
+      return std::make_unique<CheckPositiveCondition>(name, config);
+    };
+    factory.registerBuilder<CheckPositiveCondition>("CheckPositiveCondition", 
+      check_positive_condition_builder);
 
     for (const auto& model : factory.manifests())
     {
