@@ -9,7 +9,7 @@ CheckPositiveCondition::CheckPositiveCondition(const std::string& instance_name,
 BT::NodeStatus CheckPositiveCondition::CheckPositive() {
   if(!getInput("value", value_))
   {
-    throw BT::RuntimeError("Missing parameter [value]");
+    return BT::NodeStatus::FAILURE;
   }
   if (value_ > 0)
     return BT::NodeStatus::SUCCESS;
