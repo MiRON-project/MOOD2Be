@@ -50,13 +50,14 @@ find_package(ZMQ REQUIRED)
 
 
 add_executable(${PROJECT_NAME}
-    src/skill_action.cpp
-    src/skill_parser.cpp
-    src/variant_action.cpp
-    src/execute_path_action.cpp
-    src/executor.cpp
-    src/check_positive_condition.cpp
-    )
+  src/check_positive_condition.cpp
+  src/skill_action.cpp
+  src/skill_parser.cpp
+  src/variant_action.cpp
+  src/execute_path_action.cpp
+  src/executor.cpp
+  src/txt_to_waypoints_action.cpp
+  )
 
 target_link_libraries(${PROJECT_NAME} behaviortree_cpp_v3 dl pthread zmq)
 

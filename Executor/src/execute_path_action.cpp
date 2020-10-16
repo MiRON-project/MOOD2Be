@@ -22,11 +22,11 @@ BT::NodeStatus ExecutePathAction::tick() {
     setOutput("w_x", xy.first);
     setOutput("w_y", xy.second);
     if (waypoints.empty()) {
-      read_parameter = true;
+      read_parameter = false;
     }
     return BT::NodeStatus::SUCCESS;
   }
-  return BT::NodeStatus::FAILURE;
+  return BT::NodeStatus::SUCCESS;
 }
 
 void ExecutePathAction::parseWaypoints(std::string& _waypoints) {
