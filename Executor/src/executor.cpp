@@ -12,6 +12,7 @@
 #include "Intralogistic/variant_action.hpp"
 #include "Intralogistic/execute_path_action.hpp"
 #include "Intralogistic/check_positive_condition.hpp"
+#include "Intralogistic/txt_to_waypoints_action.hpp"
 
 using namespace BT;
 
@@ -78,6 +79,7 @@ int main(int argc, char** argv)
     };
     factory.registerBuilder(manif, execute_path_creator);
 
+    // Register CheckPositiveCondition
     BT::NodeBuilder check_positive_condition_builder = [](const std::string& name, 
         const BT::NodeConfiguration& config)
     {
@@ -85,6 +87,20 @@ int main(int argc, char** argv)
     };
     factory.registerBuilder<CheckPositiveCondition>("CheckPositiveCondition", 
       check_positive_condition_builder);
+
+    // Register TxtToWaypointsAction
+    manif.type = NodeType::ACTION;
+    manif.registration_ID = "TxtToWaypointsAction";
+    manif.ports = BT::PortsList{
+        BT::InputPort<std::string>("goal_path"),
+        BT::OutputPort<double>("x"),
+        BT::OutputPort<double>("y")};
+    BT::NodeBuilder txt_to_waypoints_action_builder = [](const std::string& name, 
+        const BT::NodeConfiguration& config)
+    {
+      return std::make_unique<TxtToWaypointsAction>(name, config);
+    };
+    factory.registerBuilder(manif, txt_to_waypoints_action_builder);
 
     for (const auto& model : factory.manifests())
     {
